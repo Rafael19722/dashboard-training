@@ -35,9 +35,10 @@ src/
 ├── lib/            # Utility functions and library configurations
 ├── routes/         # File-based routing architecture
 │   ├── __root.tsx  # Master Layout (Sidebar, Navigation, Shell)
-│   ├── index.tsx   # Dashboard Home Page
-│   ├── products.tsx # Product Inventory Listing
-│   └── products.$productId.tsx # Dynamic Product Detail View
+│   └── index.tsx   # Dashboard Home Page
+│────── products/
+│       ├── index.tsx # Product Inventory Listing
+│       └── $productId.tsx # Dynamic Product Detail View
 ├── store/          # Global State Management (Zustand Stores)
 └── main.tsx        # Application entry point & Provider orchestration
 ```
