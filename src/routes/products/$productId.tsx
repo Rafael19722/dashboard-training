@@ -5,6 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Heart } from 'lucide-react'
 import { useCartStore } from '@/store/cart-store'
+import { motion } from 'framer-motion'
 
 
 export const Route = createFileRoute('/products/$productId')({
@@ -101,7 +102,12 @@ function ProductComponent() {
             onClick={handleFavorite}
             className={isFavorite ? "text-red-500 hover:text-red-600 border-red-200 bg-red-50" : ""}
           >
-            <Heart size={20} fill={isFavorite ? "currentColor" : "none"} />
+            <motion.div
+              animate={isFavorite ? {scale: [1, 1.5, 1] } : { scale: 1 }}
+              tansition={{ duration: 0.4 }}
+            >
+              <Heart size={20} fill={isFavorite ? "currentColor" : "none"} />
+            </motion.div>
           </Button>
 
           <p className="text-slate-600 leading-relaxed">
