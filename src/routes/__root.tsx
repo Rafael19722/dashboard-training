@@ -2,12 +2,16 @@ import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { LayoutDashboard, ShoppingCart, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useCartStore } from '@/store/cart-store'
 
 export const Route = createRootRoute({
     component: RootComponent,
 })
 
 function RootComponent() {
+
+    const items = useCartStore((state) => state.items)
+
     return (
         <div className="flex h-screen w-full bg-slate-100 font-sans antialiased">
             <aside className="w-64 border-r bg-white p-4 hidden md:flex flex-col">
@@ -25,6 +29,11 @@ function RootComponent() {
                     <Link to="/products" className="flex items-center gap-2 p-2 rounded-md hover:bg-slate-100 [&.active]:bg-slate-100 [&.active]:font-bold text-sm">
                         <ShoppingCart size={20} />
                         Products
+                        {items.length > 0 && (
+                            <span className="ml-auto flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
+                                {items.length}
+                            </span>
+                        )}
                     </Link>
 
                     <div className="mt-auto">
