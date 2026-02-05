@@ -3,7 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Heart } from 'lucide-react'
+import { useCartStore } from '@/store/cart-store'
 
 
 export const Route = createFileRoute('/products/$productId')({
@@ -21,6 +22,13 @@ type Product = {
 
 function ProductComponent() {
   const { productId } = Route.useParams()
+
+  const numericId = Number(productId)
+
+  const { addItem, items, removeItem} = useCartStore()
+
+  const isFavorite = items.includes(numericId)
+
   const { data, isLoading, error } = useQuery({
     queryKey: ['product', productId],
     queryFn: async () => {
@@ -31,6 +39,14 @@ function ProductComponent() {
       return response.json() as Promise<Product>
     },
   })
+
+  const handleFavorite = () => {
+    if (isFavorite) {
+      removeItem(numericId)
+    } else {
+      addItem(numericId)
+    }
+  }
 
   if (isLoading) {
     return (
@@ -78,6 +94,15 @@ function ProductComponent() {
               ${data.price.toFixed(2)}
             </span>
           </div>
+
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleFavorite}
+            className={isFavorite ? "text-red-500 hover:text-red-600 border-red-200 bg-red-50" : ""}
+          >
+            <Heart size={20} fill={isFavorite ? "currentColor" : "none"} />
+          </Button>
 
           <p className="text-slate-600 leading-relaxed">
             {data.description}
