@@ -9,7 +9,7 @@ export const Route = createRootRoute({
 
 function RootComponent() {
     return (
-        <div className="flex h-screen w-full bg-slate-50">
+        <div className="flex h-screen w-full bg-slate-100 font-sans antialiased">
             <aside className="w-64 border-r bg-white p-4 hidden md:flex flex-col">
                 <div className="mb-8 flex items-center gap-2 font-bold text-xl px-2">
                     <div className="h-8 w-8 bg-black rounded-lg"></div>
@@ -17,18 +17,18 @@ function RootComponent() {
                 </div>
 
                 <nav className="flex flex-col gap-2">
-                    <Link to="/" className="links-nav">
+                    <Link to="/" className="flex items-center gap-2 p-2 rounded-md hover:bg-slate-100 [&.active]:bg-slate-100 [&.active]:font-bold text-sm">
                         <LayoutDashboard size={20} />
                         Dashboard
                     </Link>
 
-                    <Link to="/products" className="links-nav">
+                    <Link to="/products" className="flex items-center gap-2 p-2 rounded-md hover:bg-slate-100 [&.active]:bg-slate-100 [&.active]:font-bold text-sm">
                         <ShoppingCart size={20} />
                         Products
                     </Link>
 
                     <div className="mt-auto">
-                        <Button variant="ghost" className="w-full justify-start gap-2">
+                        <Button variant="ghost" className="w-full justify-start gap-2 ml-0">
                             <Settings size={20} />
                             Settings
                         </Button>
