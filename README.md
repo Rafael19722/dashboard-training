@@ -2,7 +2,7 @@
 
 A high-performance, production-ready Inventory Management Dashboard built to master the most modern tools in the React ecosystem. This project focuses on **Type-Safety**, **Server-State Synchronization**, and **Fluid User Experience (UX)**.
 
-![Project Preview](https://via.placeholder.com/800x400?text=Inventory+Dashboard+Preview)
+![Project Preview](.github/preview.png)
 
 ## Tech Stack
 
