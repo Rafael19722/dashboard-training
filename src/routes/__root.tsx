@@ -1,16 +1,28 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
+import { createRootRoute, Link, Outlet, redirect, useNavigate } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { LayoutDashboard, ShoppingCart, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useCartStore } from '@/store/cart-store'
+import { useAuthStore } from '@/store/auth-store'
 
 export const Route = createRootRoute({
     component: RootComponent,
+    beforeLoad: ({ location }) => {
+        const isAuthenticated = useAuthStore.getState().isAuthenticated
+
+        if (!isAuthenticated && location.pathname !== '/login') {
+            throw redirect({
+                to: '/login',
+            })
+        }
+    },
 })
 
 function RootComponent() {
 
     const items = useCartStore((state) => state.items)
+    const logout = useAuthStore((state) => state.logout)
+    const navigate = useNavigate()
 
     return (
         <div className="flex h-screen w-full bg-slate-100 font-sans antialiased">
@@ -40,6 +52,17 @@ function RootComponent() {
                         <Button variant="ghost" className="w-full justify-start gap-2 ml-0">
                             <Settings size={20} />
                             Settings
+                        </Button>
+                    </div>
+                    <div className="mt-auto">
+                        <Button
+                            variant="destructive"
+                            onClick={() => {
+                                logout();
+                                navigate({ to: '/login' })
+                            }}
+                        >
+                            Sair
                         </Button>
                     </div>
                 </nav>
