@@ -103,7 +103,7 @@ function DashboardHome() {
 
                 <motion.div variants={itemVariants}>
                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardHeader className="pb-2">
                             <CardTitle className="text-sm font-medium">Active Products</CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -114,8 +114,8 @@ function DashboardHome() {
                 </motion.div>
 
                 <motion.div variants={itemVariants}>
-                    <Card className="opacity-0 dashboard-card">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <Card>
+                        <CardHeader className="pb-2">
                             <CardTitle className="text-sm font-medium">Sales</CardTitle>
                         </CardHeader>
                         <CardContent>
