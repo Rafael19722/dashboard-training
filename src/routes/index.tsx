@@ -25,6 +25,25 @@ export const Route = createFileRoute('/')({
     component: DashboardHome,
 })
 
+type Product = {
+  id: string
+  title: string
+  price: number
+  category: string
+  imageUrl: string
+}
+
+type PaginatedResponse = {
+  data: Product[]
+  meta: {
+    totalItems: number
+    itemCount: number
+    itemsPerPage: number
+    totalPages: number
+    currentPage: number
+  }
+}
+
 const containerVariants = {
     hidden: { opacity: 0},
     visible: {
@@ -48,12 +67,12 @@ function DashboardHome() {
     const { data: products, isLoading } = useQuery({
         queryKey: ['products'],
         queryFn: async () => {
-            const response = await fetch('https://fakestoreapi.com/products')
-            return response.json()
+            const response = await fetch('http://localhost:3000/products')
+            return response.json() as Promise<PaginatedResponse>
         },
     })
 
-    const chartData = products?.slice(0,5).map((product: any) => ({
+    const chartData = products?.data.slice(0,5).map((product: any) => ({
         name: product.title.substring(0, 15) + '...',
         price: product.price,
         fullTitle: product.title
@@ -81,7 +100,7 @@ function DashboardHome() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">
-                                {isLoading ? <Skeleton className="h-8 w-20"/> : products?.length}
+                                {isLoading ? <Skeleton className="h-8 w-20"/> : products?.data.length}
                             </div>
                             <p className="text-xs text-muted-foreground">In inventory</p>
                         </CardContent>
