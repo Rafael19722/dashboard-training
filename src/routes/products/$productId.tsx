@@ -18,7 +18,7 @@ type Product = {
   price: number
   category: string
   description: string
-  image: string
+  imageUrl: string
 }
 
 function ProductComponent() {
@@ -33,7 +33,7 @@ function ProductComponent() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['product', productId],
     queryFn: async () => {
-      const response = await fetch(`https://fakestoreapi.com/products/${productId}`)
+      const response = await fetch(`http://localhost:3000/products/${productId}`)
       if (!response.ok) {
         throw new Error("Network responso was not ok");
       }
@@ -84,7 +84,7 @@ function ProductComponent() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex justify-center bg-white p-4 rounded-md">
-            <img src={data.image} alt={data.title} className="h-64 object-contain" />
+            <img src={data.imageUrl} alt={data.title} className="h-64 object-contain" />
           </div>
 
           <div className="flex justify-between items-center">

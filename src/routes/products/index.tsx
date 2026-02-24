@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 import {
   Table,
   TableBody,
@@ -10,29 +11,43 @@ import {
 } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { Eye } from 'lucide-react'
+import { Eye, ChevronLeft, ChevronRight } from 'lucide-react'
 
 export const Route = createFileRoute('/products/')({
   component: ProductsPage,
 })
 
 type Product = {
-  id: number
+  id: string
   title: string
   price: number
   category: string
-  image: string
+  imageUrl: string
+}
+
+type PaginatedResponse = {
+  data: Product[]
+  meta: {
+    totalItems: number
+    itemCount: number
+    itemsPerPage: number
+    totalPages: number
+    currentPage: number
+  }
 }
 
 function ProductsPage() {
+  const [page, setPage] = useState(1)
+  const limit = 5
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ['products'],
+    queryKey: ['products', page, limit],
     queryFn: async () => {
-      const response = await fetch('https://fakestoreapi.com/products')
+      const response = await fetch(`http://localhost:3000/products?page=${page}&limit=${limit}`)
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      return response.json() as Promise<Product[]>
+      return response.json() as Promise<PaginatedResponse>
     },
   })
 
@@ -78,10 +93,10 @@ function ProductsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.map((product) => (
+            {data?.data.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>
-                  <img src={product.image} alt={product.title} className="h-10 w-10 object-contain" />
+                  <img src={product.imageUrl} alt={product.title} className="h-10 w-10 object-contain" />
                 </TableCell>
                 <TableCell className="font-medium">{product.title}</TableCell>
                 <TableCell className="capitalize">{product.category}</TableCell>
@@ -97,6 +112,39 @@ function ProductsPage() {
             ))}
           </TableBody>
         </Table>
+
+        <div className="flex items-center justify-between px-4 py-4 border-t bg-slate-50">
+            <div className="text-sm text-slate-500">
+              Showing <span className="font-medium">{data?.data.length}</span> of <span className="font-medium">
+              {data?.meta.totalItems}</span> products
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage((old) => Math.max(old - 1, 1))}
+                disabled={page === 1}
+              >
+                <ChevronLeft size={16} className="mr-1" />
+                Previous
+              </Button>
+
+              <div className="text-sm font-medium mx-2">
+                Page {data?.meta.currentPage} of {data?.meta.totalPages || 1}
+              </div>
+
+              <Button
+                variant="out"
+                size="sm"
+                onClick={() => setPage((old) => old + 1)}
+                disabled={page >= (data?.meta.totalPages || 1)}
+              >
+                Next
+                <ChevronRight size={16} className="ml-1" />
+              </Button>
+            </div>
+        </div>
       </div>
     </div>
   )
