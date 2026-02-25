@@ -70,7 +70,7 @@ function ProductComponent() {
   return (
     <div className="p-4 max-w-2xl mx-auto">
       <div className="mb-4">
-        <Link to="/products">
+        <Link to="/products?page=4">
           <Button variant="outline" size="sm" className="gap-2"> 
             <ArrowLeft size={16} />
             Back to List
