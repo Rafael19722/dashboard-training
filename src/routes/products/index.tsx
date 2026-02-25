@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import {
   Table,
@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { Eye, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Eye, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react'
 
 export const Route = createFileRoute('/products/')({
   component: ProductsPage,
@@ -37,6 +37,7 @@ type PaginatedResponse = {
 }
 
 function ProductsPage() {
+  const queryClient = useQueryClient()
   const [page, setPage] = useState(1)
   const limit = 5
 
@@ -49,6 +50,27 @@ function ProductsPage() {
       }
       return response.json() as Promise<PaginatedResponse>
     },
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await fetch(`http://localhost:3000/products/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
+      if (!response.ok) throw new Error('Failed to delete')
+    },
+    onSuccess: (_, deletedId) => {
+      queryClient.setQueryData(['products', page, limit], (oldData: any) => {
+        if (!oldData) return oldData
+
+        return {
+          ...oldData,
+          data: oldData.data.filter((product: any) => product.id !== deletedId)
+        }
+      })
+      queryClient.invalidateQueries({ queryKey: ['products'] })
+    }
   })
 
   if (isLoading) {
@@ -78,7 +100,9 @@ function ProductsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold tracking-tight">Products Inventory</h2>
-        <Button>Add Product</Button>
+        <Link to="/products/create">
+          <Button>Add Product</Button>
+        </Link>
       </div>
 
       <div className="border rounded-md bg-white shadow-sm">
@@ -107,6 +131,20 @@ function ProductsPage() {
                       <Eye size={16} />
                     </Button>
                   </Link>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                    onClick={() => {
+                      if (window.confirm('Sure you wanna delete it?')) {
+                        deleteMutation.mutate(product.id.toString())
+                      }
+                    }}
+                    disabled={deleteMutation.isPending}
+                  >
+                    <Trash2 size={16} />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
